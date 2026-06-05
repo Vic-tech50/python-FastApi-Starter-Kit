@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle at top left, #5d5bf5 0%, #3ad9b1 60%, #1d9bf0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #2f3542;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 420px;
+            padding: 36px 30px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 28px 60px rgba(0, 0, 0, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(14px);
+        }
+
+        .card h1 {
+            margin: 0 0 8px;
+            font-size: 1.9rem;
+            text-align: center;
+            color: #2f3542;
+        }
+
+        .card p {
+            margin: 0 0 24px;
+            text-align: center;
+            color: #636e72;
+            line-height: 1.5;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid #dcdfe7;
+            background: #f8fbff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="file"]:focus {
+            border-color: #5d8bff;
+            box-shadow: 0 0 0 4px rgba(93, 139, 255, 0.16);
+            background: #ffffff;
+        }
+
+        .file-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #636e72;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px 16px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #5d8bff 0%, #2c7dff 100%);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 26px rgba(0, 0, 0, 0.14);
+        }
+    </style>
+</head>
+<body>
+    
+    
+
+    <form
+    method="post"
+    action="/crudimage/update/{{ crudimage.id }}"
+    enctype="multipart/form-data"
+>
+<div>
+        <h1>Edit User</h1>
+        <p>Update the details of the user below.</p>
+
+    </div><br><br>
+   <div>
+        <img src="../../uploads/blogs/{{crudimage.passport}}" alt="" width="100" height="100" style="border: 1px solid #ccc;">
+    </div><br><br>
+
+    
+
+
+    <input
+        type="text"
+        name="name"
+        placeholder="Full Name"
+        value="{{ crudimage.name }}"
+    > 
+  
+    <br><br>
+
+     <input
+        type="number"
+        name="age"
+        placeholder="Age"
+        value="{{ crudimage.age }}"
+    >
+  
+    <br><br>
+
+    <input
+        type="file"
+        name="image"
+    >
+ 
+    <br><br>
+
+    <button type="submit">
+        Save
+    </button>
+
+</form>
+
+</body>
+</html>

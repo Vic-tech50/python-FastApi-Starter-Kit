@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Create User</h1>
+
+    {% if flash %}
+<div style="background: green; color: white; padding: 10px;">
+    {{ flash }}
+</div>
+{% endif %}
+
+<form method="post" action="/crud/store">
+
+    <input
+        type="text"
+        name="title"
+        placeholder="Title"
+    > <br><br>
+
+   <textarea name="comment" id=""></textarea> <br><br>
+
+    <button type="submit">
+        Save
+    </button>
+
+</form>
+</body>
+</html>
