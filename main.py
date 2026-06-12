@@ -17,6 +17,11 @@ from routes.simplecrud import router as crud_router
 from routes.crudimage import router as crud_image
 from routes.email import router as email_router
 from routes.req import router as req_router
+from routes.sms import router as sms_router
+from routes.payment import router as pay_router
+from routes.paystack import router as paystack_router
+from routes.flutterwave import router as flutterwave_router
+from routes.stripe import router as stripe_router
 # from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
@@ -98,6 +103,11 @@ app.include_router(crud_router)
 app.include_router(crud_image)
 app.include_router(email_router)
 app.include_router(req_router)
+app.include_router(sms_router)
+app.include_router(pay_router)
+app.include_router(paystack_router)
+app.include_router(flutterwave_router)
+app.include_router(stripe_router)
 # PASSWORD HASHER
 pwd_context = CryptContext(
     schemes=["bcrypt"],

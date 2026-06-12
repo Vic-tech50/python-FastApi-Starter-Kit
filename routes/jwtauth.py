@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form, Depends, HTTPException, Request
+from fastapi import APIRouter, Form, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 from fastapi.responses import RedirectResponse
 from passlib.context import CryptContext
@@ -174,7 +174,7 @@ def login(
 
     if not user:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid credentials"
         )
 
@@ -224,7 +224,7 @@ def login(
        
 
             # raise HTTPException(
-            #     status_code=403,
+            #     status_code=status.HTTP_403_FORBIDDEN,
             #     detail="Too many failed attempts. Account locked for 5 minutes."
             # )
 

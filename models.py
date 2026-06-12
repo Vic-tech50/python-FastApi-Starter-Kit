@@ -55,3 +55,16 @@ class Student(Base):
         default=datetime.utcnow,
         onupdate=datetime.utcnow
     )
+    
+
+class Payment(Base):
+    __tablename__ = "payments"
+
+    id = Column(Integer, primary_key=True)
+    email = Column(String(255))
+    amount = Column(Integer)
+
+    reference = Column(String(255))
+    provider = Column(String(50))
+
+    status = Column(String(50))

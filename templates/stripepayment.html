@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stripe Payment</title>
+</head>
+<body>
+
+<h2>Pay with Stripe</h2>
+
+<form method="post" action="/stripe/pay">
+
+    <input type="email" name="email" placeholder="Email" required>
+    <br><br>
+
+    <input type="number" name="amount" placeholder="Amount (USD)" required>
+    <br><br>
+
+    <button type="submit">Pay Now</button>
+
+</form>
+
+</body>
+</html>

@@ -38,9 +38,11 @@ def get_db():
 
 @router.get("/login")
 def login(request: Request):
+    request.session["club"] = "Manchester United"
     return templates.TemplateResponse(request, "login.html", {
         "error": request.session.pop("error", None),
-        "success": request.session.pop("success", None)
+        "success": request.session.pop("success", None),
+        "club":  request.session.get("club")
     })
 
 
