@@ -10,6 +10,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from fastapi.responses import JSONResponse
+from services.cache import user_cache
 
 
 
@@ -311,3 +312,53 @@ def logout():
     response.delete_cookie("access_token")
 
     return response
+
+
+
+@router.post("/multilogin")
+async def login(
+    request: Request,
+    email: str = Form(...),
+    password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    
+    cache = {}
+
+    user = (db.query(models.User).filter(models.User.email == email).first())
+
+    if not user:
+        request.session["error"] = ("Invalid credentials")
+        return RedirectResponse("/auth/login",status_code=303)
+
+    if not pwd_context.verify(password,user.password):
+        request.session["error"] = ("Invalid credentials")
+
+        return RedirectResponse("/auth/login",status_code=303)
+
+    # Save User Session
+    request.session["id"] = user.id
+    request.session["name"] = user.name
+    request.session["role"] = user.role
+    request.session["email"] = user.email
+    
+     # CACHE USER
+    user_cache[user.id] = {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "role": user.role
+    }
+
+    request.session["cache"] = user_cache
+    # print("Cached Users:", user_cache)
+
+    # Redirect Based On Role
+    if user.role == "user":
+        return RedirectResponse("/home/dashboard",status_code=303)
+
+    elif user.role == "manager":
+        return RedirectResponse("/user/dashboard", status_code=303)
+
+    else:
+        return RedirectResponse("/user/admindashboard",status_code=303)

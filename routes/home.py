@@ -5,6 +5,7 @@ from database import engine, SessionLocal
 from fastapi.templating import Jinja2Templates
 import models
 from passlib.context import CryptContext # PASSWORD HASHER(pip install passlib[bcrypt])
+from dependencies.auth import admin_required, user_required
 
 templates = Jinja2Templates(directory="templates")
 
@@ -36,6 +37,6 @@ def get_db():
 
 
 @router.get("/dashboard")
-def dashboard(request: Request):
+def dashboard(request: Request, auth = Depends(user_required)):
     return templates.TemplateResponse(request, "home/dashboard.html")
 

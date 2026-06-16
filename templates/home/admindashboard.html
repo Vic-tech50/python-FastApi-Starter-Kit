@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Admin Dashboard</h2>
+    <a href="/jwt/logout">Logout</a>
+
+ <h2>{{ request.session['name'] }}</h2>
+ <h2>{{ request.session['cache'] }}</h2>
+
+{% for x in request.session['cache'] %}
+    <h2>{{ x }}</h2>
+{% endfor %}
+ 
+</body>
+</html>
