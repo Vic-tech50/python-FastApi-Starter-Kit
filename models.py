@@ -13,6 +13,8 @@ class User(Base):
     status = Column(String(50), default="active")
     failed_attempts = Column(Integer, default=0)
     locked_until = Column(DateTime, nullable=True)
+    otp = Column(String(10))
+    expires_at = Column(DateTime)
     created_at = Column(
         DateTime,
         default=datetime.utcnow
@@ -69,3 +71,11 @@ class Payment(Base):
     provider = Column(String(50))
 
     status = Column(String(50))
+    
+class OTP(Base):
+    __tablename__ = "otp_verifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), nullable=False)
+    otp = Column(String(255), nullable=False)
+    expires_at = Column(DateTime, nullable=False)
