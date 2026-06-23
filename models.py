@@ -1,6 +1,7 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Text
 from database import Base
+from sqlalchemy.sql import func
 
 class User(Base):
     __tablename__ = "users"
@@ -13,17 +14,11 @@ class User(Base):
     status = Column(String(50), default="active")
     failed_attempts = Column(Integer, default=0)
     locked_until = Column(DateTime, nullable=True)
-    otp = Column(String(10))
-    expires_at = Column(DateTime)
-    created_at = Column(
-        DateTime,
-        default=datetime.utcnow
-    )
-    updated_at = Column(
-        DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow
-    )
+    # expires_at = Column(DateTime)
+    created_at = Column(DateTime,default=datetime.utcnow)
+    updated_at = Column(DateTime,default=datetime.utcnow,onupdate=datetime.utcnow)
+    provider = Column(String(50),nullable=True )
+    provider_id = Column(String(255),nullable=True )
 
 class Blog(Base):
     __tablename__ = "blogs"
@@ -79,3 +74,17 @@ class OTP(Base):
     email = Column(String(255), nullable=False)
     otp = Column(String(255), nullable=False)
     expires_at = Column(DateTime, nullable=False)
+    
+class Message(Base):
+
+    __tablename__ = "messages"
+
+    id = Column(Integer,primary_key=True,index=True)
+    sender_id = Column(Integer)
+    receiver_id = Column(Integer)
+    message = Column(Text)
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now()
+    )

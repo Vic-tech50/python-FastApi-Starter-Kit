@@ -23,6 +23,8 @@ from routes.paystack import router as paystack_router
 from routes.flutterwave import router as flutterwave_router
 from routes.stripe import router as stripe_router
 from routes.otp import router as otp_router
+from routes.websocket import router as socket_router
+from routes.httpclient import router as client_router
 # from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
@@ -110,6 +112,8 @@ app.include_router(paystack_router)
 app.include_router(flutterwave_router)
 app.include_router(stripe_router)
 app.include_router(otp_router)
+app.include_router(socket_router)
+app.include_router(client_router)
 # PASSWORD HASHER
 pwd_context = CryptContext(
     schemes=["bcrypt"],

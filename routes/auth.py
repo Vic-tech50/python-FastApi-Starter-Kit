@@ -6,6 +6,7 @@ from database import engine, SessionLocal
 from fastapi.templating import Jinja2Templates
 import models
 from passlib.context import CryptContext # PASSWORD HASHER(pip install passlib[bcrypt])
+from services.oauth import oauth, oauth2
 
 templates = Jinja2Templates(directory="templates")
 
@@ -234,5 +235,189 @@ def create_user(
         status_code=303,
         headers={"message": "User created"}
     )
+    
+@router.get("/google/login")
+async def google_login(request: Request):
+
+    redirect_uri = (
+        request.url_for(
+            "google_callback"
+        )
+    )
+
+    return await oauth2.google.authorize_redirect(request, redirect_uri)
+
+
+@router.get(
+    "/google/callback",
+    name="google_callback"
+)
+async def google_callback(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+
+    token = await oauth2.google.authorize_access_token(
+        request
+    )
+
+    user_info = token.get(
+        "userinfo"
+    )
+
+    email = user_info["email"]
+    name = user_info["name"]
+
+    user = (
+        db.query(models.User)
+        .filter(
+            models.User.email == email
+        )
+        .first()
+    )
+
+    if not user:
+
+        user = models.User(
+            name=name,
+            email=email,
+            role="user",
+            status="active",
+            password=""
+        )
+
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    request.session["id"] = user.id
+    request.session["name"] = user.name
+    request.session["role"] = user.role
+
+    return RedirectResponse(
+        "/home/dashboard",
+        status_code=303
+    )
+    
+    
+    
+@router.get("/github/login")
+async def github_login(request: Request):
+
+    redirect_uri = (
+        request.url_for(
+            "github_callback"
+        )
+    )
+
+    return await oauth.github.authorize_redirect(request, redirect_uri)
+
+@router.get("/github/callback", name="github_callback")
+async def github_callback(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+
+    token = await oauth.github.authorize_access_token(request)
+
+    resp = await oauth.github.get(
+        "user",
+        token=token
+    )
+
+    user_info = resp.json()
+
+    emails_resp = await oauth.github.get(
+        "user/emails",
+        token=token
+    )
+
+    emails = emails_resp.json()
+
+    email = next(
+        (
+            item["email"]
+            for item in emails
+            if item["primary"]
+        ),
+        None
+    )
+
+    name = (
+        user_info["name"]
+        or user_info["login"]
+    )
+
+    user = (
+        db.query(models.User)
+        .filter(
+            models.User.email == email
+        )
+        .first()
+    )
+
+    if not user:
+
+        user = models.User(
+            name=name,
+            email=email,
+            role="user",
+            provider="github",
+            password= pwd_context.hash("password"),
+            provider_id=str(user_info["id"])
+        )
+
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    request.session["id"] = user.id
+    request.session["name"] = user.name
+    request.session["role"] = user.role
+
+    return RedirectResponse(
+        "/home/dashboard",
+        status_code=303
+    )
+
+
+# This work for Google
+# @router.get("/google/callback",name="google_callback")
+# async def google_callback(
+#     request: Request,
+#     db: Session = Depends(get_db)
+# ):
+
+#     token = await oauth.google.authorize_access_token(request)
+
+#     user_info = token.get("userinfo")
+
+#     email = user_info["email"]
+#     name = user_info["name"]
+
+#     user = (db.query(models.User).filter(models.User.email == email).first())
+
+#     if not user:
+
+#         user = models.User(
+#             name=name,
+#             email=email,
+#             role="user",
+#             status="active",
+#             password=""
+#         )
+
+#         db.add(user)
+#         db.commit()
+#         db.refresh(user)
+
+#     request.session["id"] = user.id
+#     request.session["name"] = user.name
+#     request.session["role"] = user.role
+
+#     return RedirectResponse(
+#         "/user/dashboard",
+#         status_code=303
+#     )
 
 

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    
+</head>
+<body class="container">
+
+<h2>Realtime Chat</h2>
+
+<input
+    type="number"
+    id="receiver"
+    placeholder="Receiver ID"
+/>
+
+<input
+    type="text"
+    id="message"
+    placeholder="Type message"
+/>
+
+<button onclick="sendMessage()">
+    Send
+</button>
+
+<hr>
+
+<ul id="chat"></ul>
+
+<script>
+
+const USER_ID = 1;
+
+const ws = new WebSocket(
+    `ws://localhost:8000/websocket/ws/${USER_ID}`
+);
+
+ws.onmessage = function(event){
+
+    const data =
+        JSON.parse(event.data);
+
+    const li =
+        document.createElement("li");
+
+    li.innerText =
+        data.sender_id +
+        ": " +
+        data.message;
+
+    document
+        .getElementById("chat")
+        .appendChild(li);
+};
+
+function sendMessage(){
+
+    let receiver = document.getElementById("receiver").value;
+    let message = document.getElementById("message").value;
+
+    ws.send(JSON.stringify({receiver_id: receiver,message: message}))
+    receiver = " ";
+    message = " ";
+    
+
+}
+
+</script>
+
+</body>
+</html>
