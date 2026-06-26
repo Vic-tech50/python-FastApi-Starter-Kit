@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, Text
+from sqlalchemy import Column, Integer, String, DateTime, Text, Date
 from database import Base
 from sqlalchemy.sql import func
 
@@ -19,6 +19,7 @@ class User(Base):
     updated_at = Column(DateTime,default=datetime.utcnow,onupdate=datetime.utcnow)
     provider = Column(String(50),nullable=True )
     provider_id = Column(String(255),nullable=True )
+    birthday = Column(Date)
 
 class Blog(Base):
     __tablename__ = "blogs"

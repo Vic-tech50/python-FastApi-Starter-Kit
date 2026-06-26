@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, Request, Form
 from fastapi.responses import RedirectResponse, JSONResponse
+from sqlalchemy import extract
 from sqlalchemy.orm import Session
 import time
 import models
@@ -32,6 +33,9 @@ from starlette.middleware.sessions import SessionMiddleware
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import date
+from services.mail2 import send_email
 
 
 templates = Jinja2Templates(directory="templates")
@@ -206,6 +210,55 @@ async def rate_limit_middleware(request: Request, call_next):
 
     return response
 
+scheduler = BackgroundScheduler()
+
+# def hello():
+#     print("Cron Job Running")
+
+# scheduler.add_job(
+#     hello,
+#     "interval",
+#     minutes=1
+# )
+
+# scheduler.start()
+
+def send_birthday_emails(
+    # db: Session = Depends(get_db)
+):
+
+    db = SessionLocal()
+
+    # today = date.today()
+
+    # users = db.query(models.User).all()
+
+    # for user in users:
+
+    send_email(
+            recipient="victech500@gmail.com",
+            subject="Happy Birthday",
+             body=f"""
+        <h3>New Contact Message</h3>
+
+        <p><strong>Name:</strong> Victor</p>
+
+        <p><strong>Email:</strong>email@gmail.com</p>
+
+        <p><strong>Comment:</strong></p>
+
+        <p>This is cool</p>
+        """
+        )
+        
+scheduler.add_job(
+    send_birthday_emails,
+    "interval",
+    # hour=9,
+    seconds=3
+)
+
+# scheduler.start()
 # HOME ROUTE
 @app.get("/")
 def home(request: Request):
